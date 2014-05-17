@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ReplState" timestamp="1400367900270">{:repl-history {:ide [], :local [], :remote []}}</component>
+  <component name="ReplState" timestamp="1400370691785">{:repl-history {:ide [], :local [&quot;(def config (json/read-str (slurp \&quot;/Users/scottjab/code/clojure/clj-porfavor/porfavor-config.json\&quot;)))&quot; &quot;(config)&quot; &quot;(require clojure.data.json :as json)&quot; &quot;(require [clojure.data.json :as json])&quot;], :remote []}}</component>
 </project>
 

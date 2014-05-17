@@ -10,20 +10,22 @@
             [clojure.data.json :as json]
             ))
 
+(def config (json/read-json (slurp "./porfavor-config.json")))
 
-(def ldap-connection (ldap/connect {:host "ldap.server.com"
+
+(def ldap-connection (ldap/connect {:host (config :server)
                                     :port 636
                                     :ssl? true}))
 
-(defn base [] "dc=domain,dc=com")
+(def base (config :base))
 
 (defn search-for-group [group]
-  (ldap/search ldap-connection (base) {:filter (str "(&(|(objectClass=posixGroup)(objectClass=groupOfNames))(cn="
+  (ldap/search ldap-connection base {:filter (str "(&(|(objectClass=posixGroup)(objectClass=groupOfNames))(cn="
                                                     group
                                                     "))")}))
 
 (defn search-for-user [username]
-  (ldap/search ldap-connection (base) {:filter (str "(&(objectClass=inetOrgPerson)(uid=" username "))")})
+  (ldap/search ldap-connection base {:filter (str "(&(objectClass=inetOrgPerson)(uid=" username "))")})
   )
 
 (defroutes app

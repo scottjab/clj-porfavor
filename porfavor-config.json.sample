@@ -1,0 +1,4 @@
+{
+    "server": "ldap.example.com"
+    "base": "dc=domain,dc=com"
+}
