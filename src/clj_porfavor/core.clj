@@ -40,16 +40,29 @@
                     irchandle
                     "))")))
 
+(defn search-for-mail [mail]
+  ;; This function requires schema extentions
+  (search-ldap (str "(&(objectClass=inetOrgPerson)(mail="
+                    mail
+                    "))")))
+
+(defn search-for-github [ghuid]
+  ;; This function requires schema exentions
+  (search-ldap (str "(&(objectClass=inetOrgPerson)(githubUID="
+                    ghuid
+                    "))"))
+  )
+
+(defn get-resource [func] (resource :allowed-methods [:get]
+                                 :available-media-types ["application/json"]
+                                 :handle-ok func))
+
 (defroutes app
-           (ANY "/group/:group" [group] (resource :allowed-methods [:get]
-                                                  :available-media-types ["application/json"]
-                                                  :handle-ok (search-for-group group)))
-           (ANY "/user/:username" [username] (resource :allowed-methods [:get]
-                                                       :available-media-types ["application/json"]
-                                                       :handle-ok (search-for-user username)))
-           (ANY "/irc/:irchandle" [irchandle] (resource :allowed-methods [:get]
-                                                        :available-media-types ["application/json"]
-                                                        :handle-ok (search-for-irchandle irchandle))))
+           (ANY "/group/:group" [group] (get-resource (search-for-group group)))
+           (ANY "/user/:username" [username] (get-resource (search-for-user username)))
+           (ANY "/mail/:mail" [mail] (get-resource (search-for-mail mail)))
+           (ANY "/irc/:irchandle" [irchandle] (get-resource (search-for-irchandle irchandle)))
+           (ANY "/github/:ghuid" [ghuid] (get-resource (search-for-github ghuid))))
 
 (def handler
   (-> app
