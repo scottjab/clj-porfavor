@@ -11,7 +11,8 @@
             ))
 
 (ns clj-porfavor.core
-  (:use [clojure.tools.logging :only (info error)]))
+  (:use [clojure.tools.logging :only (info error)]
+        [clj-porfavor.ldapfilter :only (anyGroup person l= l& l! l|)]))
 
 (def config (json/read-json (slurp "./porfavor-config.json")))
 
@@ -35,54 +36,43 @@
   (json/write-str (search filter)))
 
 (defn search-for-group [group]
-  (search-ldap (format "(&(|(objectClass=posixGroup)(objectClass=groupOfNames))(cn=%s))"
-                       group)))
+  (search-ldap (l& anyGroup (l= "cn" group))))
 
 (defn search-for-user [username]
-  (search-ldap (format "(&(objectClass=inetOrgPerson)(uid=%s))"
-                       username))
-  )
+  (search-ldap (l& person (l= "uid" username))))
 
 (defn search-for-irchandle [irchandle]
   ;; This method requires schema extentions
-  (search-ldap (format "(&(objectClass=inetOrgPerson)(ircHandle=%s))"
-                       irchandle)))
+  (search-ldap (l& person (l= "ircHandle" irchandle))))
 
 (defn search-for-mail [mail]
-  (search-ldap (format "(&(objectClass=inetOrgPerson)(mail=%s))"
-                       mail)))
+  (search-ldap (l& person (l= "mail" mail))))
 
 (defn search-for-github [ghuid]
   ;; This function requires schema exentions
-  (search-ldap (format "(&(objectClass=inetOrgPerson)(githubUID=%s))"
-                       ghuid)))
+  (search-ldap (l& person (l= "githubUID" ghuid))))
 
 (defn groups-for-user [username]
-  (search-ldap (format "(|(memberUid=%s)(member=%s))"
-                       username
-                       (get (first (search (format "(&(objectClass=inetOrgPerson)(uid=%s))"
-                                                   username))) :dn))))
+  (search-ldap (l| (l= "memberUid" username)
+                  (l= "member" (get (first
+                                     (search
+                                       (l& person (l= "uid" username)))) :dn)))))
 
 
 (defn whois [name]
-  (search-ldap (format "(|(uid=%s)(ircHandle=%s)(gecos=%s)(githubUid=%s))"
-                       name
-                       name
-                       name
-                       name)))
+  (search-ldap (l| (l= "uid" name)
+                  (l= "ircHandle" name)
+                  (l= "gecos" name)
+                  (l= "githubUID" name))))
 
 (defn uid [uid]
-  (search-ldap (format "(uidNumber=%s)"
-                       uid)))
+  (search-ldap (l= "uidNumber" uid)))
 
 (defn gid [gid]
-  (search-ldap (format "(gidNumber=%s)"
-                       gid)))
+  (search-ldap (l= "gidNumber" gid)))
 
 (defn search-for-any [attribute value]
-  (search-ldap (format "(%s=%s)"
-                       attribute
-                       value)))
+  (search-ldap (l= attribute value)))
 
 (defn get-resource [func] (resource :allowed-methods [:get]
                                     :available-media-types ["application/json"]

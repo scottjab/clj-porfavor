@@ -1,9 +1,24 @@
 (ns clj-porfavor.ldapfilter)
+;; Some helper methods for building ldap filters
 
-(defn attribute [attribute value]
+
+(defn l= [attribute value]
   (format "(%s=%s)"
           attribute value))
 
-(defn ldap-and [& attributes]
+(defn l& [& attributes]
   (format "(&%s)"
-          (clojure.string/join " " attributes)))
+          (clojure.string/join "" attributes)))
+
+(defn l| [& attributes]
+  (format "(|%s)"
+          (clojure.string/join "" attributes)))
+
+(defn l! [& attributes]
+  (format "(!%s)"
+          (clojure.string/join "" attributes)))
+
+(def person (l= "objectClass" "inetOrgPerson"))
+(def posixGroup (l= "objectClass" "posixGroup"))
+(def groupOfNames (l= "objectClass" "groupOfNames"))
+(def anyGroup (l| posixGroup groupOfNames))
