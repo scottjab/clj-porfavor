@@ -1,4 +1,5 @@
 (ns clj-porfavor.ldapfilter)
+
 ;; Some helper methods for building ldap filters
 
 

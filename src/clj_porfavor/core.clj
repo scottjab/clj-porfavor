@@ -54,16 +54,16 @@
 
 (defn groups-for-user [username]
   (search-ldap (l| (l= "memberUid" username)
-                  (l= "member" (get (first
-                                     (search
-                                       (l& person (l= "uid" username)))) :dn)))))
+                   (l= "member" (get (first
+                                       (search
+                                         (l& person (l= "uid" username)))) :dn)))))
 
 
 (defn whois [name]
   (search-ldap (l| (l= "uid" name)
-                  (l= "ircHandle" name)
-                  (l= "gecos" name)
-                  (l= "githubUID" name))))
+                   (l= "ircHandle" name)
+                   (l= "gecos" name)
+                   (l= "githubUID" name))))
 
 (defn uid [uid]
   (search-ldap (l= "uidNumber" uid)))
