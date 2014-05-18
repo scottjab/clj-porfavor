@@ -1,4 +1,5 @@
 {
     "server": "ldap.example.com"
-    "base": "dc=domain,dc=com"
+    "base": "dc=domain,dc=com",
+    "webserver_port": 3000
 }

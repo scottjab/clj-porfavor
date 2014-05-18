@@ -55,4 +55,4 @@
   (-> app
       (wrap-params)))
 
-(run-jetty #'handler {:port 3001})
+(run-jetty #'handler {:port (config :webserver_port)})
