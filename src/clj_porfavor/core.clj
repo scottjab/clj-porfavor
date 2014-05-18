@@ -64,7 +64,7 @@
                                                    username))) :dn))))
 
 
-  (defn whois [name]
+(defn whois [name]
   (search-ldap (format "(|(uid=%s)(ircHandle=%s)(gecos=%s)(githubUid=%s))"
                        name
                        name
