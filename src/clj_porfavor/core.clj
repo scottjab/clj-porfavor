@@ -19,11 +19,11 @@
 
 (def base (config :base))
 
+(defn search [filter]
+  (ldap/search ldap-connection base {:filter filter}))
+
 (defn search-ldap [filter]
-  (json/write-str (ldap/search ldap-connection base {
-                                                      :filter filter
-                                                      }))
-  )
+  (json/write-str (search filter)))
 
 (defn search-for-group [group]
   (search-ldap (str "(&(|(objectClass=posixGroup)(objectClass=groupOfNames))(cn="
@@ -53,16 +53,38 @@
                     "))"))
   )
 
+(defn groups-for-user [username]
+  (search-ldap (str "(|(memberUid="
+                    username
+                    ")(member="
+                    (:dn (search (str  "(&(objectClass=inetOrgPerson)(uid="
+                                       username
+                                       "))")))
+                    "))")))
+
+(defn whois [name]
+  (search-ldap (str "(|(uid="
+                    name
+                    ")(ircHandle="
+                    name
+                    ")(gecos="
+                    name
+                    ")(githubUid="
+                    name
+                    "))")))
+
 (defn get-resource [func] (resource :allowed-methods [:get]
-                                 :available-media-types ["application/json"]
-                                 :handle-ok func))
+                                    :available-media-types ["application/json"]
+                                    :handle-ok func))
 
 (defroutes app
            (ANY "/group/:group" [group] (get-resource (search-for-group group)))
            (ANY "/user/:username" [username] (get-resource (search-for-user username)))
            (ANY "/mail/:mail" [mail] (get-resource (search-for-mail mail)))
            (ANY "/irc/:irchandle" [irchandle] (get-resource (search-for-irchandle irchandle)))
-           (ANY "/github/:ghuid" [ghuid] (get-resource (search-for-github ghuid))))
+           (ANY "/github/:ghuid" [ghuid] (get-resource (search-for-github ghuid)))
+           (ANY "/userGroups/:username" [username] (get-resource (groups-for-user username)))
+           (ANY "/whois/:name" [name] (get-resource (whois name))))
 
 (def handler
   (-> app
