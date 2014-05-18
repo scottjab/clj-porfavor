@@ -19,22 +19,37 @@
 
 (def base (config :base))
 
+(defn search-ldap [filter]
+  (json/write-str (ldap/search ldap-connection base {
+                                                      :filter filter
+                                                      }))
+  )
+
 (defn search-for-group [group]
-  (ldap/search ldap-connection base {:filter (str "(&(|(objectClass=posixGroup)(objectClass=groupOfNames))(cn="
-                                                    group
-                                                    "))")}))
+  (search-ldap (str "(&(|(objectClass=posixGroup)(objectClass=groupOfNames))(cn="
+                    group
+                    "))")))
 
 (defn search-for-user [username]
-  (ldap/search ldap-connection base {:filter (str "(&(objectClass=inetOrgPerson)(uid=" username "))")})
+  (search-ldap (str "(&(objectClass=inetOrgPerson)(uid=" username "))"))
   )
+
+(defn search-for-irchandle [irchandle]
+  ;; This method requires schema extentions
+  (search-ldap (str "(&(objectClass=inetOrgPerson)(ircHandle="
+                    irchandle
+                    "))")))
 
 (defroutes app
            (ANY "/group/:group" [group] (resource :allowed-methods [:get]
                                                   :available-media-types ["application/json"]
-                                                  :handle-ok (json/write-str (search-for-group group))))
+                                                  :handle-ok (search-for-group group)))
            (ANY "/user/:username" [username] (resource :allowed-methods [:get]
                                                        :available-media-types ["application/json"]
-                                                       :handle-ok (json/write-str (search-for-user username)))))
+                                                       :handle-ok (search-for-user username)))
+           (ANY "/irc/:irchandle" [irchandle] (resource :allowed-methods [:get]
+                                                        :available-media-types ["application/json"]
+                                                        :handle-ok (search-for-irchandle irchandle))))
 
 (def handler
   (-> app
