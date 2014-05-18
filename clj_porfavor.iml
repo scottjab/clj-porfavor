@@ -16,6 +16,7 @@
     <orderEntry type="library" name="Leiningen: liberator:0.11.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojars.pntblnk/clj-ldap:0.0.7" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.4.0" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.logging:0.2.6" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/tools.nrepl:0.2.3" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-core:1.2.1" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-jetty-adapter:1.1.0" level="project" />
@@ -25,7 +26,6 @@
     <orderEntry type="library" name="Leiningen: hiccup:1.0.3" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/data.csv:0.1.2" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/data.json:0.2.1" level="project" />
-    <orderEntry type="library" name="Leiningen: org.clojure/tools.logging:0.2.3" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/tools.trace:0.7.3" level="project" />
     <orderEntry type="library" name="Leiningen: com.unboundid/unboundid-ldapsdk:2.1.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojure-contrib:1.2.0" level="project" />

@@ -76,8 +76,13 @@
                        uid)))
 
 (defn gid [gid]
-  (search-ldap (format "(gidNumber=%s"
+  (search-ldap (format "(gidNumber=%s)"
                        gid)))
+
+(defn search-for-any [attribute value]
+  (search-ldap (format "(%s=%s)"
+                       attribute
+                       value)))
 
 (defn get-resource [func] (resource :allowed-methods [:get]
                                     :available-media-types ["application/json"]
@@ -92,7 +97,8 @@
            (ANY "/userGroups/:username" [username] (get-resource (groups-for-user username)))
            (ANY "/whois/:name" [name] (get-resource (whois name)))
            (ANY "/uid/:uid" [uid] (get-resource (uid uid)))
-           (ANY "/gid/:gid" [gid] (get-resource (gid gid))))
+           (ANY "/gid/:gid" [gid] (get-resource (gid gid)))
+           (ANY "/any/:attribute/:value" [attribute value] (get-resource (search-for-any attribute value))))
 
 (def handler
   (-> app

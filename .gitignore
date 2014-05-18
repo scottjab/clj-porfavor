@@ -2,7 +2,7 @@ porfavor-config.json
 /target
 /classes
 /checkouts
-/.idea
+/.idea/workspace.xml
 pom.xml
 pom.xml.asc
 *.jar
